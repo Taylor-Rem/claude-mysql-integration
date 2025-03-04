@@ -5,7 +5,6 @@ from fastmcp import FastMCP
 from dotenv import load_dotenv
 import sys
 from config import DB_CONNECTION, DB_HOST, DB_PORT, DB_DATABASE, DB_USERNAME, DB_PASSWORD
-from system_prompt import system_prompt
 
 
 # Load environment variables from .env file
@@ -13,7 +12,6 @@ load_dotenv('/Users/taylorremund/path/to/your/.env')  # Update this path to your
 
 # Create an MCP server
 mcp = FastMCP("SQL_Connection")
-mcp.context.set_system_prompt(system_prompt)
 
 # Database connection function
 def get_db_connection():
@@ -97,13 +95,19 @@ async def update_database(query: str) -> str:
 # Tool to describe a table schema
 @mcp.tool()
 async def describe_table(table: str) -> str:
-    """Describe the schema of a MySQL table.
+    """Describe the schema of a MySQL table in the property management database.
 
     Args:
-        table: Name of the table (e.g., 'users')
+        table: Name of the table (e.g., 'transaction' or 'resident_space')
+        schema: Schema name (default: 'kingsley', fallbacks: 'management_portal', 'system_core')
     
     Returns:
         String representation of the table schema or error message.
+
+    Notes:
+        - Follow the database_context prompt for schemas (default: 'kingsley', fallbacks: 'management_portal', 'system_core'), 
+          guidelines (e.g., default table for transactions is 'transaction' (singular, NOT 'transactions'), 
+          default table for resident spaces is 'resident_space'), and rules (no sensitive data).
     """
     print(f"Describing table: {table}", file=sys.stderr)
     connection = get_db_connection()
