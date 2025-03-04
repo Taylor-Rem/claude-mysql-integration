@@ -2,16 +2,18 @@ from typing import Any, Dict, List
 import mysql.connector
 from mysql.connector import Error
 from fastmcp import FastMCP
-import os
 from dotenv import load_dotenv
 import sys
 from config import DB_CONNECTION, DB_HOST, DB_PORT, DB_DATABASE, DB_USERNAME, DB_PASSWORD
+from system_prompt import system_prompt
+
 
 # Load environment variables from .env file
 load_dotenv('/Users/taylorremund/path/to/your/.env')  # Update this path to your actual .env location
 
 # Create an MCP server
 mcp = FastMCP("SQL_Connection")
+mcp.context.set_system_prompt(system_prompt)
 
 # Database connection function
 def get_db_connection():
